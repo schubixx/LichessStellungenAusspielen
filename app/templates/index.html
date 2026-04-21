@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Login | Lichess AI Starter{% endblock %}
+{% block content %}
+<section class="hero-card">
+    <h2>Mit Lichess verbinden</h2>
+    <p>
+        Nach dem Login gelangst du zu einer Auswahlseite mit drei FEN-Buttons.
+        Erst beim Klick auf einen Button wird eine Partie gegen Stockfish gestartet.
+    </p>
+    <a class="link-button" href="{{ url_for('auth.login') }}">Mit Lichess verbinden</a>
+</section>
+{% endblock %}

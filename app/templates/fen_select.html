@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}FEN-Auswahl | Lichess AI Starter{% endblock %}
+{% block content %}
+<section class="hero-card compact">
+    <h2>Startstellungen auswählen</h2>
+    <p>Willkommen, {{ username }}. Wähle eine Stellung und starte eine neue Partie in einem neuen Fenster.</p>
+    <p class="muted">Die OAuth-Credentials sind serverseitig in SQLite gespeichert, damit du mehrere Partien starten kannst.</p>
+</section>
+
+<section class="grid">
+    {% for key, preset in presets.items() %}
+    <article class="preset-card">
+        <h3>{{ preset.label }}</h3>
+        <p>{{ preset.description }}</p>
+        <code class="fen-box">{{ preset.fen }}</code>
+        <button class="action-button" onclick="startGame('{{ key }}')">Partie starten</button>
+    </article>
+    {% endfor %}
+</section>
+
+<div id="status" class="status"></div>
+
+<script>
+async function startGame(presetKey) {
+    const status = document.getElementById("status");
+    status.textContent = "Partie wird erstellt...";
+
+    const gameWindow = window.open("", "_blank");
+
+    try {
+        const response = await fetch(`{{ url_for('game.start_game', preset_key='__PRESET__') }}`.replace("__PRESET__", presetKey), {
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.details || data.error || "Unbekannter Fehler");
+        }
+
+        gameWindow.location = data.game_url;
+        status.textContent = `Partie gestartet: ${data.game_id}`;
+    } catch (error) {
+        if (gameWindow) {
+            gameWindow.close();
+        }
+        status.textContent = `Fehler: ${error.message}`;
+    }
+}
+</script>
+{% endblock %}
