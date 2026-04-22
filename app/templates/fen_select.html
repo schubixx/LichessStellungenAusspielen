@@ -5,6 +5,7 @@
     <h2>Startstellungen auswählen</h2>
     <p>Willkommen, {{ username }}. Wähle eine Stellung und starte eine neue Partie in einem neuen Fenster.</p>
     <p class="muted">Die OAuth-Credentials sind serverseitig in SQLite gespeichert, damit du mehrere Partien starten kannst.</p>
+    {% if current_collection %}<p class="muted"><strong>Aktive COLLECTION:</strong> {{ current_collection }}</p>{% endif %}
 </section>
 
 <section class="grid">
