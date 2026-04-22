@@ -5,34 +5,49 @@
     <h2>Startstellungen auswählen</h2>
     <p>Willkommen, {{ username }}. Wähle eine Stellung und starte eine neue Partie in einem neuen Fenster.</p>
     <p class="muted">Die OAuth-Credentials sind serverseitig in SQLite gespeichert, damit du mehrere Partien starten kannst.</p>
-    {% if current_collection %}<p class="muted"><strong>Aktive COLLECTION:</strong> {{ current_collection }}</p>{% endif %}
+    {% if current_collection %}
+        <p class="muted"><strong>Aktive COLLECTION:</strong> {{ current_collection }}</p>
+    {% endif %}
 </section>
 
 <section class="grid">
-    {% for key, preset in presets.items() %}
+    {% for position in positions %}
     <article class="preset-card">
-        <h3>{{ preset.label }}</h3>
-        <p>{{ preset.description }}</p>
-        <code class="fen-box">{{ preset.fen }}</code>
-        <button class="action-button" onclick="startGame('{{ key }}')">Partie starten</button>
+        <h3>{{ position.title }}</h3>
+        <p>
+            Level: {{ position.ai_level if position.ai_level is not none else "-" }} |
+            Farbe: {{ position.color or "-" }} |
+            Zeit: {{ position.clock_limit if position.clock_limit is not none else "-" }} + {{ position.clock_increment if position.clock_increment is not none else 0 }}
+        </p>
+        <code class="fen-box">{{ position.fen }}</code>
+        <button class="action-button" onclick="startGame({{ position.id }})">Partie starten</button>
     </article>
     {% endfor %}
 </section>
 
+{% if not positions %}
+<div class="status">
+    Keine Stellungen für COLLECTION "{{ current_collection }}" gefunden.
+</div>
+{% endif %}
+
 <div id="status" class="status"></div>
 
 <script>
-async function startGame(presetKey) {
+async function startGame(positionId) {
     const status = document.getElementById("status");
     status.textContent = "Partie wird erstellt...";
 
     const gameWindow = window.open("", "_blank");
 
     try {
-        const response = await fetch(`{{ url_for('game.start_game', preset_key='__PRESET__') }}`.replace("__PRESET__", presetKey), {
-            method: "POST",
-            headers: { "Content-Type": "application/json" }
-        });
+        const response = await fetch(
+            `{{ url_for('game.start_game', position_id=0) }}`.replace("/0", "/" + positionId),
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            }
+        );
 
         const data = await response.json();
 

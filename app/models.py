@@ -21,3 +21,18 @@ class LichessToken(db.Model):
 
     def __repr__(self):
         return f"<LichessToken {self.lichess_username}>"
+
+class Position(db.Model):
+    __tablename__ = "positions"
+
+    id = db.Column(db.Integer, primary_key=True)
+    collection_id = db.Column(db.String(120), nullable=False, index=True)
+    title = db.Column(db.String(255), nullable=False)
+    fen = db.Column(db.Text, nullable=False)
+    ai_level = db.Column(db.Integer, nullable=True)
+    color = db.Column(db.String(20), nullable=True)
+    clock_limit = db.Column(db.Integer, nullable=True)
+    clock_increment = db.Column(db.Integer, nullable=True)
+
+    def __repr__(self):
+        return f"<Position {self.collection_id}: {self.title}>"

@@ -1,8 +1,9 @@
 import requests
 from flask import Blueprint, current_app, jsonify, redirect, render_template, session, url_for
 
-from ..config import DEFAULT_AI_SETTINGS, FEN_PRESETS
-from ..models import LichessToken
+from ..config import DEFAULT_AI_SETTINGS
+from ..models import LichessToken, Position
+from ..utils import get_current_collection, get_positions_for_current_collection
 
 game_bp = Blueprint("game", __name__)
 
@@ -18,15 +19,19 @@ def select_fen():
         session.clear()
         return redirect(url_for("main.index"))
 
+    collection = get_current_collection()
+    positions = get_positions_for_current_collection()
+
     return render_template(
         "fen_select.html",
-        presets=FEN_PRESETS,
+        positions=positions,
         username=token_record.lichess_username,
+        collection=collection,
     )
 
 
-@game_bp.route("/start/<preset_key>", methods=["POST"])
-def start_game(preset_key):
+@game_bp.route("/start/<int:position_id>", methods=["POST"])
+def start_game(position_id):
     user_id = session.get("lichess_user_id")
     if not user_id:
         return jsonify({"error": "Nicht eingeloggt."}), 401
@@ -35,17 +40,25 @@ def start_game(preset_key):
     if token_record is None:
         return jsonify({"error": "Kein gespeichertes Token gefunden."}), 401
 
-    preset = FEN_PRESETS.get(preset_key)
-    if preset is None:
-        return jsonify({"error": "Ungültiges Preset."}), 400
+    collection = get_current_collection()
+    if not collection:
+        return jsonify({"error": "Keine COLLECTION gesetzt."}), 400
+
+    position = Position.query.filter_by(
+        id=position_id,
+        collection_id=collection
+    ).first()
+
+    if position is None:
+        return jsonify({"error": "Stellung nicht gefunden."}), 404
 
     payload = {
-        "level": DEFAULT_AI_SETTINGS["level"],
-        "clock.limit": DEFAULT_AI_SETTINGS["clock_limit"],
-        "clock.increment": DEFAULT_AI_SETTINGS["clock_increment"],
-        "color": DEFAULT_AI_SETTINGS["color"],
+        "level": position.ai_level if position.ai_level is not None else DEFAULT_AI_SETTINGS["level"],
+        "clock.limit": position.clock_limit if position.clock_limit is not None else DEFAULT_AI_SETTINGS["clock_limit"],
+        "clock.increment": position.clock_increment if position.clock_increment is not None else DEFAULT_AI_SETTINGS["clock_increment"],
+        "color": position.color if position.color else DEFAULT_AI_SETTINGS["color"],
         "variant": DEFAULT_AI_SETTINGS["variant"],
-        "fen": preset["fen"],
+        "fen": position.fen,
     }
 
     response = requests.post(
@@ -73,6 +86,8 @@ def start_game(preset_key):
         {
             "game_id": game_id,
             "game_url": f"https://lichess.org/{game_id}",
-            "preset": preset_key,
+            "position_id": position.id,
+            "title": position.title,
+            "collection": collection,
         }
     )
