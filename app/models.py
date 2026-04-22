@@ -10,6 +10,7 @@ class LichessToken(db.Model):
     lichess_user_id = db.Column(db.String(120), unique=True, nullable=False)
     lichess_username = db.Column(db.String(120), nullable=False)
     access_token = db.Column(db.Text, nullable=False)
+    admin =db.Column(db.Boolean, default=False)
     scope = db.Column(db.String(255), nullable=True)
     created_at = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(

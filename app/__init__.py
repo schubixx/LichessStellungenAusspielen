@@ -13,6 +13,11 @@ def create_app():
 
     app = Flask(__name__, instance_relative_config=True)
 
+    @app.context_processor
+    def inject_admin():
+        from app.utils import is_admin
+        return {"is_admin": is_admin()}
+
     app.config["FEN_PRESETS"] = {
         "preset_1": {
             "label": "Mattsetzen mit Dame",
@@ -69,3 +74,4 @@ def create_app():
         db.create_all()
 
     return app
+

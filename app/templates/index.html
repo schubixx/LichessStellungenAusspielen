@@ -8,5 +8,10 @@
         Erst beim Klick auf einen Button wird eine Partie gegen Stockfish gestartet.
     </p>
     <a class="link-button" href="{{ url_for('auth.login') }}">Mit Lichess verbinden</a>
+{% if is_admin %}
+    <a href="{{ url_for('main.new_collection') }}">
+        <button>Neue Collection</button>
+    </a>
+{% endif %}
 </section>
 {% endblock %}
