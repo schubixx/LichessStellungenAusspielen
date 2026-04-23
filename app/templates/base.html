@@ -10,12 +10,15 @@
     <header class="site-header">
         <div class="container header-row">
             <div>
-                <h1 class="brand">Lichess AI Starter</h1>
+                <h1 class="brand">Lichess Stellungen ausspielen</h1>
             </div>
             <nav>
                 {% if session.get('lichess_user_id') %}
                     <span class="user-pill">Angemeldet als {{ session.get('lichess_username') }}</span>
                     <a class="link-button secondary" href="{{ url_for('auth.logout') }}">Logout</a>
+                {% endif %}
+                {% if is_admin %}
+                    <a class="link-button secondary" href="{{ url_for('main.new_collection') }}">Neue Sammlung anlegen</a>
                 {% endif %}
             </nav>
         </div>

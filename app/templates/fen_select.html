@@ -2,18 +2,8 @@
 {% block title %}FEN-Auswahl | Lichess AI Starter{% endblock %}
 {% block content %}
 
-<section class="hero-card-content">
-{% if is_admin %}
-<div style="margin-bottom: 1rem;">
-    <a href="{{ url_for('main.new_collection') }}">
-        <button type="button">Neue Collection</button>
-    </a>
-</div>
-{% endif %}
-</section>
-
 <section class="hero-card compact">
-    <h2>Startstellungen auswählen</h2>
+    <h2>Stellung ausspielen</h2>
     <p>Willkommen, {{ username }}. Wähle eine Stellung und starte eine neue Partie in einem neuen Fenster.</p>
     <p class="muted">Die OAuth-Credentials sind serverseitig in SQLite gespeichert, damit du mehrere Partien starten kannst.</p>
     {% if current_collection %}

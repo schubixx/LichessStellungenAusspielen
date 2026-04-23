@@ -83,13 +83,11 @@ def new_collection():
 @main_bp.route("/")
 def index():
     collection = get_current_collection()
-    presets = current_app.config["FEN_PRESETS"]
 
     if not session.get("lichess_user_id"):
         return render_template(
             "index.html",
-            collection=collection,
-            presets=presets
+            collection=collection
         )
 
     return redirect(url_for("game.select_fen"))
