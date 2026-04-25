@@ -20,7 +20,18 @@
             Farbe: {{ position.color or "-" }} |
             Zeit: {{ position.clock_limit if position.clock_limit is not none else "-" }} + {{ position.clock_increment if position.clock_increment is not none else 0 }}
         </p>
-        <code class="fen-box">{{ position.fen }}</code>
+        <!-- <code class="fen-box">{{ position.fen }}</code>-->
+        <div class="chess-board">
+            {% for row in position.board %}
+                {% for square in row %}
+                    <div class="chess-square {{ square.color }}">
+                        {% if square.piece %}
+                            <span class="merida-piece">{{ square.piece }}</span>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
         <button class="action-button" onclick="startGame({{ position.id }})">Partie starten</button>
     </article>
     {% endfor %}

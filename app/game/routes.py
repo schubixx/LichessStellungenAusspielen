@@ -3,7 +3,7 @@ from flask import Blueprint, current_app, jsonify, redirect, render_template, se
 
 from ..config import DEFAULT_AI_SETTINGS
 from ..models import LichessToken, Position
-from ..utils import get_current_collection, get_positions_for_current_collection
+from ..utils import get_current_collection, get_positions_for_current_collection, fen_to_board
 
 game_bp = Blueprint("game", __name__)
 
@@ -21,6 +21,8 @@ def select_fen():
 
     collection = get_current_collection()
     positions = get_positions_for_current_collection()
+    for position in positions:
+        position.board = fen_to_board(position.fen)
 
     return render_template(
         "fen_select.html",

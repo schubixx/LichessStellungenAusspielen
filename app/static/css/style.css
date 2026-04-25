@@ -1,3 +1,15 @@
+@font-face {
+  font-family: "Merida";
+  src: url("/static/fonts/merida.woff2") format("woff2"), url("/static/fonts/merida.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.merida-piece {
+  font-family: "Merida";
+  font-size: 30px;
+}
+
 :root {
     color-scheme: light;
     --bg: #f5f7fb;
@@ -219,3 +231,34 @@ body {
   .collection-table code {
     word-break: break-all;
   }
+
+.chess-board {
+  width: 240px;
+  height: 240px;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  border: 2px solid #333;
+  margin: 1rem 0;
+}
+
+.chess-square {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  line-height: 1;
+}
+
+  .chess-square.light {
+    background: #f0d9b5;
+  }
+
+  .chess-square.dark {
+    background: #b58863;
+  }
+
+.merida-piece {
+  font-family: "Chess Merida", "Merida", serif;
+  font-size: 30px;
+}

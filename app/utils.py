@@ -12,6 +12,21 @@ from flask import request, session
 
 from .models import Position, LichessToken
 
+MERIDA_MAP = {
+    "K": "k",  # weißer König
+    "Q": "q",
+    "R": "r",
+    "B": "b",
+    "N": "n",
+    "P": "p",
+    "k": "l",  # schwarzer König
+    "q": "w",
+    "r": "t",
+    "b": "v",
+    "n": "m",
+    "p": "o",
+}
+
 def generate_code_verifier() -> str:
     return base64.urlsafe_b64encode(os.urandom(32)).decode().rstrip("=")
 
@@ -106,3 +121,33 @@ def base64_urlsafe_to_uid(b64: str) -> int:
 
 def snowflake44() -> str:
     return uid_to_base64_urlsafe(to_44bit_salted(datetime.now(timezone.utc)))
+
+def fen_to_board(fen):
+    if not fen:
+        return []
+
+    board_part = fen.split()[0]
+    rows = []
+
+    for row_index, fen_row in enumerate(board_part.split("/")):
+        row = []
+        col_index = 0
+
+        for char in fen_row:
+            if char.isdigit():
+                for _ in range(int(char)):
+                    row.append({
+                        "piece": "",
+                        "color": "light" if (row_index + col_index) % 2 == 0 else "dark"
+                    })
+                    col_index += 1
+            else:
+                row.append({
+                    "piece": MERIDA_MAP.get(char, ""),
+                    "color": "light" if (row_index + col_index) % 2 == 0 else "dark"
+                })
+                col_index += 1
+
+        rows.append(row)
+
+    return rows
