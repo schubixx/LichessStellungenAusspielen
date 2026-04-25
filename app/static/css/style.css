@@ -189,3 +189,33 @@ body {
   border: 1px solid #efb4b4;
   color: #8a1f1f;
 }
+
+.form-row textarea {
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #c9ced6;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  resize: vertical;
+}
+
+.collection-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+  .collection-table th,
+  .collection-table td {
+    border: 1px solid #d8dbe2;
+    padding: 0.75rem;
+    vertical-align: top;
+  }
+
+  .collection-table th {
+    background: #f2f4f7;
+    text-align: left;
+  }
+
+  .collection-table code {
+    word-break: break-all;
+  }

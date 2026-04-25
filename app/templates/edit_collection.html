@@ -1,0 +1,51 @@
+﻿{% extends "base.html" %}
+
+{% block content %}
+<h2>Collection bearbeiten</h2>
+
+<p>
+    <strong>Collection ID:</strong>
+    <code>{{ collection.collection_id }}</code>
+</p>
+
+<form method="post">
+    <div class="form-row">
+        <label for="description">Beschreibung</label>
+        <textarea id="description" name="description" rows="4">{{ collection.description or "" }}</textarea>
+    </div>
+
+    <button type="submit" class="action-button">Speichern</button>
+    <a href="{{ url_for('main.my_collections') }}">
+        <button type="button">Zurück</button>
+    </a>
+</form>
+
+<h3>Stellungen in dieser Collection</h3>
+
+{% if positions %}
+<table class="collection-table">
+    <thead>
+        <tr>
+            <th>Titel</th>
+            <th>FEN</th>
+            <th>Level</th>
+            <th>Color</th>
+            <th>Clock</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for position in positions %}
+        <tr>
+            <td>{{ position.title }}</td>
+            <td><code>{{ position.fen }}</code></td>
+            <td>{{ position.ai_level }}</td>
+            <td>{{ position.color }}</td>
+            <td>{{ position.clock_limit }} + {{ position.clock_increment }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Keine Stellungen vorhanden.</p>
+{% endif %}
+{% endblock %}

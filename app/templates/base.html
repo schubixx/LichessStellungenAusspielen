@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="de">
 <head>
     <meta charset="utf-8">
@@ -19,6 +19,9 @@
                 {% endif %}
                 {% if is_admin %}
                     <a class="link-button secondary" href="{{ url_for('main.new_collection') }}">Neue Sammlung anlegen</a>
+                {% endif %}
+                {% if is_admin %}
+                    <a class="link-button secondary" href="{{ url_for('main.my_collections') }}">Meine Sammlungen</a>
                 {% endif %}
             </nav>
         </div>

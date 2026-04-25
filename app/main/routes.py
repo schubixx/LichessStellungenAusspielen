@@ -1,7 +1,7 @@
 from flask import Blueprint, flash, redirect, render_template, session, url_for, current_app, request
 from app.utils import get_current_collection, generate_collection_id, is_admin
 from ..extensions import db 
-from app.models import Position
+from app.models import Position, Collection, LichessToken
 
 main_bp = Blueprint("main", __name__)
 
@@ -14,6 +14,7 @@ def new_collection():
         collection_id = generate_collection_id()
         valid_rows = 0
 
+        # Stellungen der Collection speichern   
         for i in range(8):
             title = (request.form.get(f"title_{i}") or "").strip()
             fen = (request.form.get(f"fen_{i}") or "").strip()
@@ -75,6 +76,19 @@ def new_collection():
             flash("Bitte mindestens eine Stellung mit FEN eingeben.", "error")
             return render_template("new_collection.html"), 400
 
+        # Collection speichern
+        description = (request.form.get("description") or "").strip()
+        user_id = session.get("lichess_user_id")
+        token_record = LichessToken.query.filter_by(lichess_user_id=user_id).first()
+        creator_name = token_record.lichess_username if token_record else "unbekannt"
+        collection_record = Collection(
+            collection_id=collection_id,
+            creator_name=creator_name,
+            description=description,
+        )
+        db.session.add(collection_record)
+
+
         db.session.commit()
         return render_template("collection_created.html", collection_id=collection_id)
 
@@ -91,3 +105,76 @@ def index():
         )
 
     return redirect(url_for("game.select_fen"))
+
+@main_bp.route("/collections")
+def my_collections():
+    if not is_admin():
+        return "Nicht erlaubt", 403
+
+    user_id = session.get("lichess_user_id")
+    token_record = LichessToken.query.filter_by(lichess_user_id=user_id).first()
+
+    if not token_record:
+        return redirect(url_for("main.index"))
+
+    collections = (
+        Collection.query
+        .filter_by(creator_name=token_record.lichess_username)
+        .order_by(Collection.id.desc())
+        .all()
+    )
+
+    return render_template("collections.html", collections=collections)
+
+
+@main_bp.route("/collections/<collection_id>/edit", methods=["GET", "POST"])
+def edit_collection(collection_id):
+    if not is_admin():
+        return "Nicht erlaubt", 403
+
+    user_id = session.get("lichess_user_id")
+    token_record = LichessToken.query.filter_by(lichess_user_id=user_id).first()
+
+    collection = Collection.query.filter_by(
+        collection_id=collection_id,
+        creator_name=token_record.lichess_username
+    ).first_or_404()
+
+    if request.method == "POST":
+        collection.description = (request.form.get("description") or "").strip()
+        db.session.commit()
+
+        return redirect(url_for("main.my_collections"))
+
+    positions = (
+        Position.query
+        .filter_by(collection_id=collection_id)
+        .order_by(Position.id.asc())
+        .all()
+    )
+
+    return render_template(
+        "edit_collection.html",
+        collection=collection,
+        positions=positions
+    )
+
+
+@main_bp.route("/collections/<collection_id>/delete", methods=["POST"])
+def delete_collection(collection_id):
+    if not is_admin():
+        return "Nicht erlaubt", 403
+
+    user_id = session.get("lichess_user_id")
+    token_record = LichessToken.query.filter_by(lichess_user_id=user_id).first()
+
+    collection = Collection.query.filter_by(
+        collection_id=collection_id,
+        creator_name=token_record.lichess_username
+    ).first_or_404()
+
+    Position.query.filter_by(collection_id=collection_id).delete()
+    db.session.delete(collection)
+    db.session.commit()
+
+    return redirect(url_for("main.my_collections"))

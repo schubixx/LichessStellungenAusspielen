@@ -6,6 +6,15 @@
 <p>Du kannst bis zu 8 Stellungen erfassen. Gespeichert werden nur Zeilen, in denen ein FEN eingetragen ist.</p>
 
 <form method="post" class="collection-form">
+  <div class="form-row">
+      <label for="description">Beschreibung der Collection</label>
+      <textarea
+          id="description"
+          name="description"
+          rows="4"
+          placeholder="Kurze Beschreibung der Collection"
+      ></textarea>
+  </div>
     {% for i in range(8) %}
     <fieldset class="position-block">
         <legend>Stellung {{ i + 1 }}</legend>
