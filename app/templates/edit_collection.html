@@ -13,6 +13,10 @@
         <label for="description">Beschreibung</label>
         <textarea id="description" name="description" rows="4">{{ collection.description or "" }}</textarea>
     </div>
+    <div class="form-row">
+        <label for="explanation">Erläuterung für die Auswahlseite</label>
+        <textarea id="explanation" name="explanation" rows="4">{{ collection.explanation or "" }}</textarea>
+    </div>
 
     <button type="submit" class="action-button">Speichern</button>
     <a href="{{ url_for('main.my_collections') }}">

@@ -146,6 +146,7 @@ def edit_collection(collection_id):
 
     if request.method == "POST":
         collection.description = (request.form.get("description") or "").strip()
+        collection.explanation = (request.form.get("explanation") or "").strip()
         db.session.commit()
 
         return redirect(url_for("main.my_collections"))
