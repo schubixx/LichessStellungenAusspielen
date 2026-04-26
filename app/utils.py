@@ -27,6 +27,22 @@ MERIDA_MAP = {
     "p": "o",
 }
 
+SVG_PIECE_MAP = {
+    "K": "wK.svg",
+    "Q": "wQ.svg",
+    "R": "wR.svg",
+    "B": "wB.svg",
+    "N": "wN.svg",
+    "P": "wP.svg",
+    "k": "bK.svg",
+    "q": "bQ.svg",
+    "r": "bR.svg",
+    "b": "bB.svg",
+    "n": "bN.svg",
+    "p": "bP.svg",
+}
+
+
 def generate_code_verifier() -> str:
     return base64.urlsafe_b64encode(os.urandom(32)).decode().rstrip("=")
 
@@ -122,7 +138,7 @@ def base64_urlsafe_to_uid(b64: str) -> int:
 def snowflake44() -> str:
     return uid_to_base64_urlsafe(to_44bit_salted(datetime.now(timezone.utc)))
 
-def fen_to_board(fen):
+def fen_to_board_merida(fen):
     if not fen:
         return []
 
@@ -144,6 +160,36 @@ def fen_to_board(fen):
             else:
                 row.append({
                     "piece": MERIDA_MAP.get(char, ""),
+                    "color": "light" if (row_index + col_index) % 2 == 0 else "dark"
+                })
+                col_index += 1
+
+        rows.append(row)
+
+    return rows
+
+def fen_to_board(fen):
+    if not fen:
+        return []
+
+    board_part = fen.split()[0]
+    rows = []
+
+    for row_index, fen_row in enumerate(board_part.split("/")):
+        row = []
+        col_index = 0
+
+        for char in fen_row:
+            if char.isdigit():
+                for _ in range(int(char)):
+                    row.append({
+                        "piece": None,
+                        "color": "light" if (row_index + col_index) % 2 == 0 else "dark"
+                    })
+                    col_index += 1
+            else:
+                row.append({
+                    "piece": SVG_PIECE_MAP.get(char),
                     "color": "light" if (row_index + col_index) % 2 == 0 else "dark"
                 })
                 col_index += 1

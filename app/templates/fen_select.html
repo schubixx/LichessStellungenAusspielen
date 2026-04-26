@@ -26,13 +26,18 @@
                 {% for square in row %}
                     <div class="chess-square {{ square.color }}">
                         {% if square.piece %}
-                            <span class="merida-piece">{{ square.piece }}</span>
+                            <img
+                                class="piece-img"
+                                src="{{ url_for('static', filename='pieces/cburnett/' ~ square.piece) }}"
+                                alt=""
+                                draggable="false"
+                            >
                         {% endif %}
                     </div>
                 {% endfor %}
             {% endfor %}
         </div>
-        <button class="action-button" onclick="startGame({{ position.id }})">Partie starten</button>
+      <button class="action-button" onclick="startGame({{ position.id }})">Partie starten</button>
     </article>
     {% endfor %}
 </section>

@@ -233,31 +233,50 @@ body {
   }
 
 .chess-board {
-  width: 240px;
-  height: 240px;
+  width: 320px;
+  height: 320px;
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   grid-template-rows: repeat(8, 1fr);
-  border: 2px solid #333;
-  margin: 1rem 0;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
 }
 
 .chess-square {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 26px;
-  line-height: 1;
+  width: 40px;
+  height: 40px;
+  position: relative;
 }
 
   .chess-square.light {
-    background: #f0d9b5;
+    background-color: #f0d9b5;
   }
 
   .chess-square.dark {
-    background: #b58863;
+    background-color: #b58863;
   }
 
+.piece-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
+}
+
+@media (max-width: 520px) {
+  .chess-board {
+    width: 280px;
+    height: 280px;
+  }
+
+  .chess-square {
+    width: 35px;
+    height: 35px;
+  }
+}
 .merida-piece {
   font-family: "Chess Merida", "Merida", serif;
   font-size: 30px;
