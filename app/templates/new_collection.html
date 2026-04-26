@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 
 {% block content %}
 <h2>Neue Collection anlegen</h2>
@@ -8,14 +8,14 @@
 <form method="post" class="collection-form">
   <div class="form-row">
       <label for="description">Beschreibung der Collection</label>
-      <textarea
-          id="description"
-          name="description"
-          rows="4"
-          placeholder="Kurze Beschreibung der Collection"
-      ></textarea>
+      <textarea id="description" name="description" rows="3"></textarea>
   </div>
-    {% for i in range(8) %}
+  <div class="form-row">
+      <label for="explanation">Erläuterung für die Auswahlseite</label>
+      <textarea id="explanation" name="explanation" rows="3"
+                placeholder="Dieser Text erscheint später auf der Seite fen_select."></textarea>
+  </div>
+  {% for i in range(8) %}
     <fieldset class="position-block">
         <legend>Stellung {{ i + 1 }}</legend>
 
@@ -44,6 +44,13 @@
             </div>
 
             <div class="form-row">
+                <label for="position_description_{{ i }}">Beschreibung der Stellung</label>
+                <textarea
+                    id="position_description_{{ i }}"
+                    name="position_description_{{ i }}"
+                    rows="2"
+                    placeholder="Kurze Beschreibung dieser Stellung"
+                ></textarea>
                 <label for="color_{{ i }}">Color</label>
                 <select id="color_{{ i }}" name="color_{{ i }}">
                     <option value="random" selected>random</option>

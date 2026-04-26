@@ -30,6 +30,7 @@ class Collection(db.Model):
     collection_id = db.Column(db.String(120), unique=True, nullable=False, index=True)
     creator_name = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=True)
+    explanation = db.Column(db.Text)
 
 class Position(db.Model):
     __tablename__ = "positions"
@@ -37,6 +38,7 @@ class Position(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     collection_id = db.Column(db.String(120), nullable=False, index=True)
     title = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text)
     fen = db.Column(db.Text, nullable=False)
     ai_level = db.Column(db.Integer, nullable=True)
     color = db.Column(db.String(20), nullable=True)

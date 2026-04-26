@@ -281,3 +281,9 @@ body {
   font-family: "Chess Merida", "Merida", serif;
   font-size: 30px;
 }
+
+.position-description {
+  margin-top: 0.25rem;
+  color: #555;
+  font-size: 0.95rem;
+}

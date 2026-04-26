@@ -4,10 +4,17 @@
 
 <section class="hero-card compact">
     <h2>Stellung ausspielen</h2>
-    <p>Willkommen, {{ username }}. Wähle eine Stellung und starte eine neue Partie in einem neuen Fenster.</p>
-    <p class="muted">Die OAuth-Credentials sind serverseitig in SQLite gespeichert, damit du mehrere Partien starten kannst.</p>
+    <p>
+        {% if collection_record and collection_record.explanation %}
+            Willkommen, {{ username }}.<br />
+            {{ collection_record.explanation }}
+        {% else %}
+            Willkommen, {{ username }}. Wähle eine Stellung und starte eine neue Partie in einem neuen Fenster.
+        {% endif %}
+    </p>
+    <!--<p class="muted">Die OAuth-Credentials sind serverseitig in SQLite gespeichert, damit du mehrere Partien starten kannst.</p>-->
     {% if current_collection %}
-        <p class="muted"><strong>Aktive COLLECTION:</strong> {{ current_collection }}</p>
+        <p class="muted"><strong>Diese Sammlung hat folgende ID:</strong> {{ current_collection }}</p>
     {% endif %}
 </section>
 
@@ -15,6 +22,9 @@
     {% for position in positions %}
     <article class="preset-card">
         <h3>{{ position.title }}</h3>
+        {% if position.description %}
+            <p class="position-description">{{ position.description }}</p>
+        {% endif %}
         <p>
             Level: {{ position.ai_level if position.ai_level is not none else "-" }} |
             Farbe: {{ position.color or "-" }} |

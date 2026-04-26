@@ -2,7 +2,7 @@ import requests
 from flask import Blueprint, current_app, jsonify, redirect, render_template, session, url_for
 
 from ..config import DEFAULT_AI_SETTINGS
-from ..models import LichessToken, Position
+from ..models import LichessToken, Position, Collection
 from ..utils import get_current_collection, get_positions_for_current_collection, fen_to_board
 
 game_bp = Blueprint("game", __name__)
@@ -19,8 +19,13 @@ def select_fen():
         session.clear()
         return redirect(url_for("main.index"))
 
-    collection = get_current_collection()
+    collection_id = get_current_collection()
     positions = get_positions_for_current_collection()
+
+    collection_record = None
+    if collection_id:
+        collection_record = Collection.query.filter_by(collection_id=collection_id).first()
+
     for position in positions:
         position.board = fen_to_board(position.fen)
 
@@ -28,9 +33,9 @@ def select_fen():
         "fen_select.html",
         positions=positions,
         username=token_record.lichess_username,
-        collection=collection,
+        collection=collection_id,
+        collection_record=collection_record,
     )
-
 
 @game_bp.route("/start/<int:position_id>", methods=["POST"])
 def start_game(position_id):

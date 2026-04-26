@@ -17,6 +17,7 @@ def new_collection():
         # Stellungen der Collection speichern   
         for i in range(8):
             title = (request.form.get(f"title_{i}") or "").strip()
+            position_description = (request.form.get(f"position_description_{i}") or "").strip()
             fen = (request.form.get(f"fen_{i}") or "").strip()
             ai_level_raw = (request.form.get(f"ai_level_{i}") or "").strip()
             color = (request.form.get(f"color_{i}") or "random").strip().lower()
@@ -63,6 +64,7 @@ def new_collection():
             pos = Position(
                 collection_id=collection_id,
                 title=title or f"Stellung {i + 1}",
+                description=position_description,
                 fen=fen,
                 ai_level=ai_level,
                 color=color,
@@ -78,6 +80,7 @@ def new_collection():
 
         # Collection speichern
         description = (request.form.get("description") or "").strip()
+        explanation = (request.form.get("explanation") or "").strip()
         user_id = session.get("lichess_user_id")
         token_record = LichessToken.query.filter_by(lichess_user_id=user_id).first()
         creator_name = token_record.lichess_username if token_record else "unbekannt"
@@ -85,6 +88,7 @@ def new_collection():
             collection_id=collection_id,
             creator_name=creator_name,
             description=description,
+            explanation=explanation,
         )
         db.session.add(collection_record)
 
