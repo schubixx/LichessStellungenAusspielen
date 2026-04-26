@@ -92,7 +92,7 @@ def get_positions_for_current_collection():
     return (
         Position.query
         .filter_by(collection_id=collection)
-        .order_by(Position.title.asc())
+        .order_by(Position.id)
         .all()
     )
 
