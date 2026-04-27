@@ -1,7 +1,39 @@
-<h2>Collection erstellt</h2>
+﻿{% extends "base.html" %}
 
-<p>Deine COLLECTION_ID:</p>
-<h3>{{ collection_id }}</h3>
+{% block content %}
 
-<p>Aufruf:</p>
-<code>?COLLECTION={{ collection_id }}</code>
+<section class="hero-card compact">
+  <h2>Collection erstellt</h2>
+
+  <p>Deine COLLECTION_ID:</p>
+  <h3>{{ collection_id }}</h3>
+
+  <p>Aufruf mit folgendem Link:</p>
+
+  <code id="collection-link">
+      {{ url_for('main.index', COLLECTION=collection_id, _external=True) }}
+  </code>
+
+  <br><br>
+
+  <button
+      type="button"
+      onclick="copyCollectionLink('{{ url_for('main.index', COLLECTION=collection_id, _external=True) }}')">
+      Link kopieren
+  </button>
+
+  <br><br>
+
+  <img
+      src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ url_for('main.index', COLLECTION=collection_id, _external=True) | urlencode }}"
+      alt="QR Code"
+      class="qr-code"
+  />  
+
+  <br><br>
+
+  <a href="{{ url_for('main.index', COLLECTION=collection_id, _external=True) }}" target="_blank">
+      <button type="button">Collection öffnen</button>
+  </a>
+</section>
+{% endblock %}

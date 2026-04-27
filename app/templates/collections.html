@@ -36,12 +36,20 @@
                       onsubmit="return confirm('Collection wirklich löschen? Alle zugehörigen Stellungen werden ebenfalls gelöscht.');">
                     <button type="submit">Löschen</button>
                 </form>
+
+                <button
+                    type="button"
+                    onclick="copyCollectionLink('{{ url_for('main.index', COLLECTION=collection.collection_id, _external=True) }}')">
+                    Link kopieren
+                </button>
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+
 {% else %}
 <p>Du hast noch keine Collections angelegt.</p>
 {% endif %}
 {% endblock %}
+
