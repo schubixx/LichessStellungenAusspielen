@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, redirect, render_template, session, url_for, current_app, request
+﻿from flask import Blueprint, flash, redirect, render_template, session, url_for, current_app, request
 from app.utils import get_current_collection, generate_collection_id, is_admin
 from ..extensions import db 
 from app.models import Position, Collection, LichessToken
@@ -138,18 +138,13 @@ def edit_collection(collection_id):
 
     user_id = session.get("lichess_user_id")
     token_record = LichessToken.query.filter_by(lichess_user_id=user_id).first()
+    if not token_record:
+        return redirect(url_for("main.index"))
 
     collection = Collection.query.filter_by(
         collection_id=collection_id,
         creator_name=token_record.lichess_username
     ).first_or_404()
-
-    if request.method == "POST":
-        collection.description = (request.form.get("description") or "").strip()
-        collection.explanation = (request.form.get("explanation") or "").strip()
-        db.session.commit()
-
-        return redirect(url_for("main.my_collections"))
 
     positions = (
         Position.query
@@ -158,12 +153,53 @@ def edit_collection(collection_id):
         .all()
     )
 
+    if request.method == "POST":
+        collection.description = (request.form.get("description") or "").strip()
+        collection.explanation = (request.form.get("explanation") or "").strip()
+
+
+        for position in positions:
+            fen = (request.form.get(f"fen_{position.id}") or "").strip()
+
+            # Leere FEN = Stellung löschen
+            if not fen:
+                db.session.delete(position)
+                continue
+
+            try:
+                ai_level = int(request.form.get(f"ai_level_{position.id}") or 1)
+                clock_limit = int(request.form.get(f"clock_limit_{position.id}") or 300)
+                clock_increment = int(request.form.get(f"clock_increment_{position.id}") or 0)
+            except ValueError:
+                return "Level, Clock Limit und Clock Increment müssen ganze Zahlen sein.", 400
+
+            color = (request.form.get(f"color_{position.id}") or "random").lower()
+
+            if not 1 <= ai_level <= 8:
+                return "Level muss zwischen 1 und 8 liegen.", 400
+            if not 0 <= clock_limit <= 10800:
+                return "Clock Limit muss zwischen 0 und 10800 liegen.", 400
+            if not 0 <= clock_increment <= 60:
+                return "Clock Increment muss zwischen 0 und 60 liegen.", 400
+            if color not in {"white", "black", "random"}:
+                return "Color muss white, black oder random sein.", 400
+
+            position.title = (request.form.get(f"title_{position.id}") or "").strip() or f"Stellung {id}"
+            position.description = (request.form.get(f"position_description_{position.id}") or "").strip()
+            position.fen = fen
+            position.ai_level = ai_level
+            position.color = color
+            position.clock_limit = clock_limit
+            position.clock_increment = clock_increment
+
+        db.session.commit()
+        return redirect(url_for("main.edit_collection", collection_id=collection_id))
+
     return render_template(
         "edit_collection.html",
         collection=collection,
-        positions=positions
+        positions=positions,
     )
-
 
 @main_bp.route("/collections/<collection_id>/delete", methods=["POST"])
 def delete_collection(collection_id):
