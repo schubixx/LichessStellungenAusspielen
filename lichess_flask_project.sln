@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37012.4 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "lichess_flask_project", "lichess_flask_project.pyproj", "{D1B86608-CE7A-4BA1-8DD7-E8DAFE0EFFCA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D1B86608-CE7A-4BA1-8DD7-E8DAFE0EFFCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1B86608-CE7A-4BA1-8DD7-E8DAFE0EFFCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C337E4A2-1310-4D77-92F2-1E3FD941358A}
+	EndGlobalSection
+EndGlobal
